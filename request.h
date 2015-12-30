@@ -40,6 +40,7 @@ typedef struct{
     PCB *pcb;//要调用的PCB列表
     PCB *main_pcb;//输出的进程的PCB
     int user_num;//request进程数量
+    int fd;
 }PrtParams;
 
 void request(ReqParams *params);

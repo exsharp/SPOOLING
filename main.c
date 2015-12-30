@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <fcntl.h>
 
 #include "request.h"
 
@@ -23,6 +24,10 @@ int main() {
 
     srand((unsigned int)time(NULL));
 
+    //文件参数
+    int fd;
+    fd = open("D:\\WorkSpace\\SPOOLING\\test.txt",O_NOCTTY|O_WRONLY|O_TRUNC|O_APPEND,0660);
+
     // 文件个数
     int file[PROC_COUNT]={FILE_COUNT};
 
@@ -41,6 +46,7 @@ int main() {
     prtParams.global = &reqBlock;
     prtParams.pcb = pcb;
     prtParams.main_pcb =  &main_pcb;
+    prtParams.fd = fd;
 
     int loop_count=0;
     for (;;){

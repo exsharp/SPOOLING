@@ -3,6 +3,7 @@
 //
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "request.h"
 
 void request(ReqParams *params){
@@ -75,6 +76,7 @@ void print(PrtParams *prtParams){
     PCB *pcb = prtParams->pcb;
     PCB *main_pcb = prtParams->main_pcb;
     int user_num = prtParams->user_num;
+    int fd = prtParams->fd;
 
     //空闲请求输出块数=10？
     if ( REQUEST_BLOCK_LEN - global->reqPtr.n_length == REQUEST_BLOCK_LEN){
@@ -100,20 +102,14 @@ void print(PrtParams *prtParams){
         }
     }
 
-    FILE *file;
-    if((file=fopen("D:\\WorkSpace\\SPOOLING\\test.txt","a+"))==NULL)
-    {
-        printf("can't open file");
-    }
-
     //空闲请求块!=10
     int i = 0;
     int loop_count = global->reqPtr.n_length;
     int loop_begin = global->reqPtr.n_begin;
     for (;i<loop_count;i++){
         int now = (loop_begin + i) % REQUEST_BLOCK_LEN;
-        int succ = (int)fwrite(global->buffer[now],sizeof(char),(size_t)global->reqBlock[now].length,file);
-        fwrite("\n",sizeof(char),1,file);
+        write(fd,global->buffer[now],(size_t)global->reqBlock[now].length);
+        write(fd,"\n",1);
 
         printf("    输出%d号进程内容(长度:%d):",global->reqBlock[now].reqname,global->reqBlock[now].length);
         int j = 0;
@@ -127,7 +123,6 @@ void print(PrtParams *prtParams){
         global->reqPtr.n_begin++;
         global->reqPtr.n_length--;
     }
-    fclose(file);
 
     for (i=0;i<user_num;i++){
         if (pcb[i].status==1){
