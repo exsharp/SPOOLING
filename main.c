@@ -6,7 +6,7 @@
 #include "request.h"
 
 #define PROC_COUNT 3
-#define FILE_COUNT 7,21,10
+#define FILE_COUNT 7,21,15
 
 void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
     req->reqPtr.n_length=0;
@@ -36,7 +36,11 @@ int main() {
     reqParams.global = &reqBlock;
     reqParams.main_pcb = &main_pcb;
     //Print进程的参数列表
-
+    PrtParams prtParams;
+    prtParams.user_num = PROC_COUNT;
+    prtParams.global = &reqBlock;
+    prtParams.pcb = pcb;
+    prtParams.main_pcb =  &main_pcb;
 
     int loop_count=0;
     for (;;){
@@ -64,11 +68,6 @@ int main() {
         } else if (run > 0.95 && main_pcb.status==0){
             printf("  输出进程:\n");
             //输出进程
-            PrtParams prtParams;
-            prtParams.user_num = PROC_COUNT;
-            prtParams.global = &reqBlock;
-            prtParams.pcb = pcb;
-            prtParams.main_pcb =  &main_pcb;
             print(&prtParams);
             printf("  进程现况:status:%d\n",main_pcb.status);
         }
@@ -91,11 +90,7 @@ int main() {
     printf("\n** ALL PROCESS FINISH **");
     return 0;
 }
-/*#include<stdio.h>
-#include<pthread.h>
-#include<string.h>
-#include<sys/types.h>
-#include<unistd.h>
+/*
 pthread_t main_tid;
 
 void func(int *a)
