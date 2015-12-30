@@ -11,6 +11,7 @@
 #define PROC_COUNT 3
 #define FILE_COUNT 7,21,15
 
+//打印机每个字符打印时间
 extern int sleep_time;
 
 void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
@@ -27,6 +28,7 @@ void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
 int main() {
 
     srand((unsigned int)time(NULL));
+    sleep_time = 1000*1;
 
     //文件参数
     int fd;
