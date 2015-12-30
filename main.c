@@ -8,10 +8,10 @@
 
 #include "request.h"
 
-#define PROC_COUNT 3
-#define FILE_COUNT 7,21,15
+#define PROC_COUNT 2
+#define FILE_COUNT 10,10
 
-//打印机每个字符打印时间
+//打印机每个字符打印时间（毫秒）
 extern int sleep_time;
 
 void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
@@ -28,11 +28,11 @@ void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
 int main() {
 
     srand((unsigned int)time(NULL));
-    sleep_time = 1000*1;
+    sleep_time = 200;
 
     //文件参数
     int fd;
-    fd = open("D:\\WorkSpace\\SPOOLING\\test.txt",O_NOCTTY|O_WRONLY|O_TRUNC|O_APPEND,0660);
+    fd = open("/dev/pts/1",O_NOCTTY|O_WRONLY|O_TRUNC|O_APPEND,0660);
 
     // 文件个数
     int file[PROC_COUNT]={FILE_COUNT};
@@ -63,12 +63,12 @@ int main() {
 
     int loop_count=0;
     for (;;){
-        sleep(1);
+        usleep((__useconds_t)1000*1200);
         loop_count++;
         printf("调度次数:%d:\n",loop_count);
 
         double run = (double)rand()/RAND_MAX;
-        if (run < 0.8){
+        if (run < 0.6){
             double pro = 0.8 / PROC_COUNT;
             int count = (int)(run / pro);
             printf("  %d号请求进程:\n",count);
@@ -84,15 +84,15 @@ int main() {
                 printf("    没有空闲的请求块\n");
             }
             printf("  进程现况:status:%d,file_left:%d\n",pcb[count].status,file[count]);
-        } else if (run > 0.8 && main_pcb.status==0){
+        } else if (/*run > 0.8&&*/ main_pcb.status==0){
             printf("  输出进程:\n");
             //输出进程
             int ret = pthread_mutex_trylock(&mutex);
             if (ret == EBUSY){
-                printf("    “打印机”正忙");
+                printf("    “打印机”正忙\n");
             }else{
                 lockf(1,1,0);
-                pthread_create(&tid,NULL,&print,&prtParams);
+                pthread_create(&tid,NULL,(void *)&print,&prtParams);
                 //print(&prtParams);
             }
             printf("  进程现况:status:%d\n",main_pcb.status);
@@ -113,29 +113,6 @@ int main() {
         }
     }
     pthread_join(tid,NULL);
-    printf("\n** ALL PROCESS FINISH **");
+    printf("\n** ALL PROCESS FINISH **\n");
     return 0;
 }
-/*
-pthread_t main_tid;
-
-void func(int *a)
-{
-    while(1){
-        if ((*a) == 1){
-            printf("HelloWorld");
-            break;
-        }
-    }
-}
-int main()
-{
-    int a = 0;
-    pthread_create(&main_tid, NULL, &func, &a); //创建线程
-    printf("0");
-    a=1;
-    printf("1");
-
-    sleep(2);
-    return 0;
-}*/
