@@ -71,7 +71,7 @@ int main() {
                 }
             }
             printf("  进程现况:status:%d,file_left:%d\n",pcb[count].status,file[count]);
-        } else if (run > 0.95 && main_pcb.status==0){
+        } else if (run > 0.8 && main_pcb.status==0){
             printf("  输出进程:\n");
             //输出进程
             print(&prtParams);
