@@ -41,6 +41,7 @@ typedef struct{
     PCB *main_pcb;//输出的进程的PCB
     int user_num;//request进程数量
     int fd;
+    pthread_mutex_t *mutex;
 }PrtParams;
 
 void request(ReqParams *params);

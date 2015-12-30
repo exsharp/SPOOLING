@@ -1,10 +1,12 @@
-//
-// Created by zfliu on 2015/12/29.
-//
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <pthread.h>
 #include "request.h"
+
+//1000微妙是1毫秒
+//1秒是1000毫秒
+int sleep_time=1000*500;
 
 void request(ReqParams *params){
 
@@ -24,22 +26,16 @@ void request(ReqParams *params){
     int empty_pos = (global->reqPtr.n_begin + global->reqPtr.n_length)%REQUEST_BLOCK_LEN;
     //空闲的位置
 
-    int i,tmp=0;
-    for (i=0;i<10;i++) {
-        tmp = (rand() % 9) + 1;  //前10个让它不为0
+    int i,tmp=0,sum;
+    sum = (rand()%24)+6;  //文件长度1~29  最后一位放0
+    for (i=0;i<sum;i++) {
+        tmp = (rand() % 9) + 1;  //让它不为0
         global->buffer[empty_pos][i] =(char)(tmp+'0');
     }
-    for (i=10;i<30 && tmp!=0;i++){
-        if (i==29){
-            global->buffer[empty_pos][29] = '0';
-            break;
-        }
-        tmp = rand()%10;
-        global->buffer[empty_pos][i] = (char)(tmp+'0');
-    }
+    global->buffer[empty_pos][i] = '0' ;
 
     global->reqBlock[empty_pos].reqname = pcb->pid;
-    global->reqBlock[empty_pos].length = i-1;
+    global->reqBlock[empty_pos].length = i;
     global->reqPtr.n_length ++ ;
     if (global->reqPtr.n_length!=REQUEST_BLOCK_LEN){
         global->reqPtr.n_length = global->reqPtr.n_length % REQUEST_BLOCK_LEN;
@@ -108,20 +104,28 @@ void print(PrtParams *prtParams){
     int loop_begin = global->reqPtr.n_begin;
     for (;i<loop_count;i++){
         int now = (loop_begin + i) % REQUEST_BLOCK_LEN;
-        write(fd,global->buffer[now],(size_t)global->reqBlock[now].length);
-        write(fd,"\n",1);
 
         printf("    输出%d号进程内容(长度:%d):",global->reqBlock[now].reqname,global->reqBlock[now].length);
         int j = 0;
         int len = global->reqBlock[now].length-1;
-        for (j;j<len;j++)
+
+        for (j;j<len;j++){
             printf("%c",global->buffer[now][j]);
+        }
         printf("\n");
+        lockf(1,0,0);
+        for (j=0;j<len;j++){
+            write(fd,global->buffer[now][j],1);
+            usleep(sleep_time);
+        }
+        write(fd,"\n",1);
 
 
         //环形队列减1
         global->reqPtr.n_begin++;
         global->reqPtr.n_length--;
+
+        break; //只输出一个文件
     }
 
     for (i=0;i<user_num;i++){
@@ -134,5 +138,8 @@ void print(PrtParams *prtParams){
     status=1 为等待状态1，表示请求输出块用完，请求输出的用户进程等待；
     status=2 为等待状态2， 表示输出井空，SPOOLING输出进程等待；
     status=3 为结束态，进程执行完成。*/
+
+    //释放锁
+    pthread_mutex_unlock(prtParams->mutex);
     return;
 }
