@@ -39,9 +39,17 @@ void request(ReqParams *params){
 
     global->reqBlock[empty_pos].reqname = pcb->pid;
     global->reqBlock[empty_pos].length = i-1;
-    //global->reqPtr.n_length = global->reqPtr.n_length ++;
     global->reqPtr.n_length ++ ;
-    global->reqPtr.n_length = global->reqPtr.n_length % REQUEST_BLOCK_LEN;
+    if (global->reqPtr.n_length!=REQUEST_BLOCK_LEN){
+        global->reqPtr.n_length = global->reqPtr.n_length % REQUEST_BLOCK_LEN;
+    }
+
+    printf("    占用空闲块位置:%d,文件长度:%d\n    文件内容:",empty_pos,i);
+    int j = 0;
+    for (j;j<i-1;j++)
+        printf("%c",global->buffer[empty_pos][j]);
+    printf("\n");
+    printf("    请求快现状:空闲请求块数量:%d\n",REQUEST_BLOCK_LEN - global->reqPtr.n_length);
 
     //剩余文件减1
     (*t)--;
@@ -49,7 +57,7 @@ void request(ReqParams *params){
         pcb->status = 3;
     }
 
-/*    status=0 为可执行态；
+/*  status=0 为可执行态；
     status=1 为等待状态1，表示请求输出块用完，请求输出的用户进程等待；
     status=2 为等待状态2， 表示输出井空，SPOOLING输出进程等待；
     status=3 为结束态，进程执行完成。*/
@@ -58,6 +66,7 @@ void request(ReqParams *params){
     if (main_pcb->status == 2){
         main_pcb->status = 0;
     }
+
     return;
 }
 
@@ -69,6 +78,7 @@ void print(PrtParams *prtParams){
 
     //空闲请求输出块数=10？
     if ( REQUEST_BLOCK_LEN - global->reqPtr.n_length == REQUEST_BLOCK_LEN){
+        printf("    没有请求块被占用\n");
         int i = 0;
         int finish_req = 1;
         for (;i<user_num;i++){
@@ -80,9 +90,11 @@ void print(PrtParams *prtParams){
         if (finish_req==1){
             //输出进程结束
             main_pcb->status = 3;
+            printf("    所有进程输出完毕\n");
             return;
         }else{
             //输出进程等待
+            printf("    输出进程等待输出\n");
             main_pcb->status = 2;
             return;
         }
@@ -102,7 +114,14 @@ void print(PrtParams *prtParams){
         int now = (loop_begin + i) % REQUEST_BLOCK_LEN;
         int succ = (int)fwrite(global->buffer[now],sizeof(char),(size_t)global->reqBlock[now].length,file);
         fwrite("\n",sizeof(char),1,file);
-        printf("%d\n",succ);
+
+        printf("    输出%d号进程内容(长度:%d):",global->reqBlock[now].reqname,global->reqBlock[now].length);
+        int j = 0;
+        int len = global->reqBlock[now].length-1;
+        for (j;j<len;j++)
+            printf("%c",global->buffer[now][j]);
+        printf("\n");
+
 
         //环形队列减1
         global->reqPtr.n_begin++;
@@ -120,6 +139,5 @@ void print(PrtParams *prtParams){
     status=1 为等待状态1，表示请求输出块用完，请求输出的用户进程等待；
     status=2 为等待状态2， 表示输出井空，SPOOLING输出进程等待；
     status=3 为结束态，进程执行完成。*/
-
     return;
 }
