@@ -6,7 +6,7 @@
 
 //1000微妙是1毫秒
 //1秒是1000毫秒
-int sleep_time=1000*500;
+int sleep_time=500;
 
 void request(ReqParams *params){
 
@@ -89,11 +89,17 @@ void print(PrtParams *prtParams){
             //输出进程结束
             main_pcb->status = 3;
             printf("    所有进程输出完毕\n");
+
+            //释放锁
+            pthread_mutex_unlock(prtParams->mutex);
             return;
         }else{
             //输出进程等待
             printf("    输出进程等待输出\n");
             main_pcb->status = 2;
+
+            //释放锁
+            pthread_mutex_unlock(prtParams->mutex);
             return;
         }
     }
@@ -115,8 +121,8 @@ void print(PrtParams *prtParams){
         printf("\n");
         lockf(1,0,0);
         for (j=0;j<len;j++){
-            write(fd,global->buffer[now][j],1);
-            usleep(sleep_time);
+            write(fd,&global->buffer[now][j],1);
+            usleep((__useconds_t)1000*sleep_time);
         }
         write(fd,"\n",1);
 
@@ -142,4 +148,8 @@ void print(PrtParams *prtParams){
     //释放锁
     pthread_mutex_unlock(prtParams->mutex);
     return;
+}
+
+void package(PrtParams *params){
+
 }
