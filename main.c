@@ -18,7 +18,7 @@ extern int sleep_time;
 void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
     req->reqPtr.n_length=0;
     req->reqPtr.n_begin=0;
-    req->reqPtr.n_end=1;
+    req->reqPtr.n_end=0;
     int i;
     for (i = 0;i<=PROC_COUNT;i++){
         pcb[i].pid=i+1;
@@ -71,7 +71,7 @@ int main() {
 
         double run = (double)rand()/RAND_MAX;
         if (run < PROB_REQUE){
-            double pro = PROB_REQUE / PROC_COUNT;
+            double pro = (double)PROB_REQUE / PROC_COUNT;
             int count = (int)(run / pro);
             printf("  %d号请求进程:\n",count);
             if (pcb[count].status == 0){

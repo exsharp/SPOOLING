@@ -7,6 +7,7 @@
 //1000微妙是1毫秒
 //1秒是1000毫秒
 int sleep_time=500;
+int print_count=0;
 
 void request(ReqParams *params){
 
@@ -15,7 +16,7 @@ void request(ReqParams *params){
     PCB *main_pcb = params->main_pcb;
     int *t = params->t;
 
-    if (global->reqPtr.n_length == REQUEST_BLOCK_LEN){
+    if (REQUEST_BLOCK_LEN == global->reqPtr.n_length){
         //没用空闲的请求块
         //转调度程度
         pcb->status = 1;
@@ -39,9 +40,10 @@ void request(ReqParams *params){
     global->reqBlock[empty_pos].length = i;
     global->reqPtr.n_length ++ ;
     global->reqPtr.n_end ++ ;
+    global->reqPtr.n_end = global->reqPtr.n_end % REQUEST_BLOCK_LEN;
     if (global->reqPtr.n_length!=REQUEST_BLOCK_LEN){
         global->reqPtr.n_length = global->reqPtr.n_length % REQUEST_BLOCK_LEN;
-        global->reqPtr.n_end = global->reqPtr.n_begin + global->reqPtr.n_length;
+        //global->reqPtr.n_end = (global->reqPtr.n_begin + global->reqPtr.n_length)%REQUEST_BLOCK_LEN;
     }
 
     printf("    占用空闲块位置:%d,文件长度:%d\n    文件内容:",empty_pos,i);
@@ -49,7 +51,7 @@ void request(ReqParams *params){
     for (j;j<i-1;j++)
         printf("%c",global->buffer[empty_pos][j]);
     printf("\n");
-    printf("    请求快现状:空闲请求块数量:%d\n",REQUEST_BLOCK_LEN - global->reqPtr.n_length);
+    printf("    请求块现状:空闲请求块数量:%d\n",REQUEST_BLOCK_LEN - global->reqPtr.n_length);
 
     //剩余文件减1
     (*t)--;
@@ -123,6 +125,9 @@ void print(PrtParams *prtParams){
         }
         printf("\n");
         lockf(1,0,0);
+        char buf[40];
+        sprintf(buf,"打印第%d个文件，%d号进程内容:",++print_count,global->reqBlock[now].reqname-1);
+        write(fd,buf,sizeof(buf));
         for (j=0;j<len;j++){
             write(fd,&global->buffer[now][j],1);
             usleep(1000*sleep_time);

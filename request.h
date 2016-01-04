@@ -47,6 +47,5 @@ typedef struct{
 
 void request(ReqParams *params);
 void print(PrtParams *params);
-void package(PrtParams *params);
 
 #endif //SPOOLING_REQUEST_H
