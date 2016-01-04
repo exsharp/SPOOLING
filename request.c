@@ -23,7 +23,8 @@ void request(ReqParams *params){
     }
 
     //还有剩余的空闲块
-    int empty_pos = (global->reqPtr.n_begin + global->reqPtr.n_length)%REQUEST_BLOCK_LEN;
+    //int empty_pos = (global->reqPtr.n_begin + global->reqPtr.n_length)%REQUEST_BLOCK_LEN;
+    int empty_pos = global->reqPtr.n_end;
     //空闲的位置
 
     int i,tmp=0,sum;
@@ -37,8 +38,10 @@ void request(ReqParams *params){
     global->reqBlock[empty_pos].reqname = pcb->pid;
     global->reqBlock[empty_pos].length = i;
     global->reqPtr.n_length ++ ;
+    global->reqPtr.n_end ++ ;
     if (global->reqPtr.n_length!=REQUEST_BLOCK_LEN){
         global->reqPtr.n_length = global->reqPtr.n_length % REQUEST_BLOCK_LEN;
+        global->reqPtr.n_end = global->reqPtr.n_begin + global->reqPtr.n_length;
     }
 
     printf("    占用空闲块位置:%d,文件长度:%d\n    文件内容:",empty_pos,i);
@@ -75,7 +78,7 @@ void print(PrtParams *prtParams){
     int fd = prtParams->fd;
 
     //空闲请求输出块数=10？
-    if ( REQUEST_BLOCK_LEN - global->reqPtr.n_length == REQUEST_BLOCK_LEN){
+    if ( global->reqPtr.n_length == 0){
         printf("    没有请求块被占用\n");
         int i = 0;
         int finish_req = 1;
@@ -122,7 +125,7 @@ void print(PrtParams *prtParams){
         lockf(1,0,0);
         for (j=0;j<len;j++){
             write(fd,&global->buffer[now][j],1);
-            usleep((__useconds_t)1000*sleep_time);
+            usleep(1000*sleep_time);
         }
         write(fd,"\n",1);
 
@@ -148,8 +151,4 @@ void print(PrtParams *prtParams){
     //释放锁
     pthread_mutex_unlock(prtParams->mutex);
     return;
-}
-
-void package(PrtParams *params){
-
 }

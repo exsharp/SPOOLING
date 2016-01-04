@@ -1,7 +1,364 @@
+顺序结构练习
+A:
+var
+  a,b,c,d,x,f:real;
+begin
+  readln(x,a,b,c,d);
+  f:=a*x*x*x+b*x*x+c*x+d;
+  writeln(f:0:7);
+end.
 
+B:
+var
+  a,b,c,d,x,f:integer;
+begin
+  readln(x);
+  f:=x mod 10;
+  a:=x div 10 mod 10;
+  c:=x div 100;
+  writeln(f,a,c);
+end.
 
+C:(海伦公式)
+var
+  a,b,c,d,x,e,f,k,g,h,i,j,l,m,n,o,p,q,r,s,t:real;
+begin
+  readln(a,b,c,d,e,f);
+  x:=a-c;
+  t:=b-d;
+  k:=sqrt(x*x+t*t);
+  g:=a-e;
+  h:=b-f;
+  i:=sqrt(g*g+h*h);
+  l:=c-e;
+  m:=d-f;
+  n:=sqrt(l*l+m*m);
+  o:=(k+i+n)/2;
+  p:=sqrt(o*(o-k)*(o-i)*(o-n));
+  writeln(p:0:2);
+end.
 
+D:
+var
+  a,b,c,d,x,f,k,g,h,i,j:real;
+begin
+  readln(a,b);
+  readln(c,d);
+  x:=a-c;
+  f:=b-d;
+  k:=sqrt(x*x+f*f);
+  writeln(k:0:3);
+end.
 
+选择结构
+A:
+var
+  a,b,c,d,x,f,k,g,h,i,j:real;
+begin
+  readln(a);
+  if (a<5) and (a>=0) then
+  b:=-a+2.5
+  else if (a>=5) and (a<10) then
+  b:=2-1.5*(a-3)*(a-3)
+  else if (a>=10) and (a<20)then
+  b:=a/2-1.5;
+  writeln(b:0:3);
+end.
+
+B:
+program herobrine;
+var
+  a,b,c,d,x,f,k,g,h,i,j,e:qword;
+  z,y:char;
+begin
+  readln(a,y,z);
+  if a <= 1000 then b:=8
+  else if a>1000 then
+  begin
+    if a mod 500>0
+    then f:=(a-1000)div 500+1
+    else if a mod 500 =0
+    then f:=(a-1000)div 500;
+    b:=8+f*4;
+  end;
+  if z='y' then c:=5
+  else if z='n' then c:=0;
+  k:=b+c;
+  writeln(k);
+end.
+
+C:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:int64;
+  et,gay:char;
+begin
+  readln(a,b,et,gay);
+  case gay of
+  '+':begin e:=a+b;  writeln(e); end;
+  '*':begin e:=a*b;  writeln(e); end;
+  '/':begin if b<>0 then begin e:=a div b;  writeln(e) end else writeln('Divided by zero!');end;
+  '-':begin e:=a-b;  writeln(e); end;
+  else writeln('Invalid operator!');
+end;
+end.
+
+D:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:int64;
+  et,gay:char;
+begin
+  readln(a,b);
+    if (a<=1) and (a>=-1) and (b<=1) and (b>=-1) then
+      writeln('yes')
+    else writeln('no');
+end.
+
+For循环:
+A:
+var
+  a,b,c,d,x,f,k,g,h,i,j,e:longint;
+  l,m,n:real;
+  z,y:char;
+begin
+  readln(a);
+  d:=0;
+  for b:= 1 to a do
+  begin
+    readln(c);
+    d:=d+c;
+  end;
+  l:=d/a;
+  writeln(d,' ',l:0:5);
+end.
+
+B:
+program herobrine;
+var
+  a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+begin
+  readln(a);
+  e:=0;
+  d:=1000;
+  for b:=1 to a do
+  begin
+    read(c);
+    if e<c then e:=c;
+    if d>c then d:=c;
+  end;
+  f:=e-d;
+  writeln(f);
+end.
+
+C:
+program herobrine;
+var
+  a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+begin
+  readln(a);
+  d:=1;
+  f:=0;
+  for b:=1 to a do
+  begin
+    e:=f;
+    f:=d+e;
+    d:=e;
+  end;
+  writeln(f);
+end.
+
+D:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:shortint;
+begin
+  readln(a);
+  f:=0;
+  for b:=1 to a do
+  begin
+    c:=b mod 10;
+    d:=b div 10;
+    if (b mod 7 <> 0) and (c <> 7) and (d <> 7) then
+    begin
+      e:=b*b;
+      f:=f+e;
+    end;
+  end;
+  writeln(f);
+end.
+
+while循环
+A:
+program herobrine;
+var
+  a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+begin
+  readln(a,b);
+  d:=0;
+  while a<=b do
+  begin
+    if a mod 17 = 0 then
+    begin
+      c:=a;
+      d:=d+a;
+    end;
+    a:=a+1;
+  end;
+  writeln(d);
+end.
+
+B:
+program herobrine;
+var
+  d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:extended;
+  a,b,c:longint;
+begin
+  readln(a,b);
+  c:=0;
+  d:=a;
+  while c<b do
+  begin
+    d:=d*1.001;
+    c:=c+1;
+  end;
+  writeln(d:0:4);
+end.
+
+C:
+program herobrine;
+var
+  d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,a,b,c:longint;
+begin
+  readln(a);
+  b:=0;
+  h:=0;
+  while b<a do
+  begin
+    b:=b+1;
+    read(c);
+    d:=c mod 10;
+    e:=c div 100 mod 10;
+    f:=c div 10 mod 10;
+    g:=c div 1000;
+    if d-g-f-e>0 then
+      h:=h+1;
+  end;
+  writeln(h);
+end.
+
+D:
+program herobrine;
+var
+  d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,a,b,c:longint;
+begin
+  readln(a);
+  while a<>1 do
+  begin;
+    b:=a;
+    if a mod 2 = 1 then
+    begin;
+      a:=a*3+1;
+      writeln(b,'*3+1=',a);
+    end
+    else begin
+      a:=a div 2;
+      writeln(b,'/2=',a);
+    end;
+    if a=1 then writeln('End');
+  end;
+end.
+
+多重循环
+A:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:shortint;
+begin
+  readln(a);
+  e:=0;
+  for b:=1 to a do
+  begin
+    d:=1;
+    for c:=1 to b do
+    begin
+      d:=d*c;
+    end;
+    e:=e+d;
+  end;
+  writeln(e);
+end.
+
+B:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:int64;
+begin
+  readln(a);
+  e:=0;
+  for b:=1 to a do
+  begin
+    d:=b;
+    while d>0 do
+    begin
+      c:=d mod 10;
+      d:=d div 10;
+      if c=1 then
+        e:=e+1;
+    end;
+  end;
+  writeln(e);
+end.
+
+C:
+program herobrine;
+var
+  b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z:longint;
+  a:int64;
+begin
+  readln(a);
+  e:=0;
+  b:=0;
+  while b<=a do
+  begin
+    e:=e+1;
+    f:=0;
+    for c:=2 to trunc(sqrt(e)) do
+    begin
+      if e mod c=0 then
+      begin
+        f:=1;
+      end;
+    end;
+    if f=0 then
+    begin
+      b:=b+1;
+    end;
+  end;
+  writeln(e);
+end.
+
+D:
+program herobrine;
+var
+  d,e,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,a,b,c:longint;
+  f:boolean;
+begin
+  readln(n);
+  for i := 2 to n div 2 do
+  begin
+    if (n mod i) = 0 then
+    begin
+      writeln(n div i);
+      break;
+    end;
+  end;
+end.
 
 
 

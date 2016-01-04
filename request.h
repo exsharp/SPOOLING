@@ -15,6 +15,7 @@ typedef struct{  //请求块
 typedef struct{ //指针，请求块已用
     int n_begin;  //因为请求块作为环形队列，故这里是开始,从0开始
     int n_length; //这里是请求块已用个数
+    int n_end;
 }ReqPtr;
 
 typedef struct{

@@ -10,6 +10,7 @@
 
 #define PROC_COUNT 2
 #define FILE_COUNT 10,10
+#define PROB_REQUE 0.8 //执行request的概率
 
 //打印机每个字符打印时间（毫秒）
 extern int sleep_time;
@@ -17,6 +18,7 @@ extern int sleep_time;
 void init(ReqBlock *req,PCB *pcb,PCB *main_pcb){
     req->reqPtr.n_length=0;
     req->reqPtr.n_begin=0;
+    req->reqPtr.n_end=1;
     int i;
     for (i = 0;i<=PROC_COUNT;i++){
         pcb[i].pid=i+1;
@@ -63,13 +65,13 @@ int main() {
 
     int loop_count=0;
     for (;;){
-        usleep((__useconds_t)1000*1200);
+        usleep(1000*1200);
         loop_count++;
         printf("调度次数:%d:\n",loop_count);
 
         double run = (double)rand()/RAND_MAX;
-        if (run < 0.6){
-            double pro = 0.8 / PROC_COUNT;
+        if (run < PROB_REQUE){
+            double pro = PROB_REQUE / PROC_COUNT;
             int count = (int)(run / pro);
             printf("  %d号请求进程:\n",count);
             if (pcb[count].status == 0){
